@@ -62,14 +62,15 @@ pipeline {
         }
          stage('Deploy to production') {
             steps {
-               sshagent(credentials : ['vagrant-user-with-key']) {
+                echo "Deploy Spring petclinic"
+               //sshagent(credentials : ['vagrant-user-with-key']) {
                    
                 //sh 'ssh -o StrictHostKeyChecking=no vagrant@prod-host.cheekuru.com uptime'
                 //sh 'ssh -v vagrant@prod-host.cheekuru.com'
                 //sh 'scp ./target/spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar vagrant@prod-host.cheekuru.com:/home/vagrant/devops/'
                 //sh 'ssh -o StrictHostKeyChecking=no vagrant@prod-host.cheekuru.com java -jar /home/vagrant/devops/spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar'
 
-               }
+               //}
             }
         }
     }
