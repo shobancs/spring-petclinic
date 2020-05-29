@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'maven-3.6.2'
+        maven 'mvn-3.6.3'
         jdk 'open-jdk8'
     }
     stages {
@@ -18,11 +18,11 @@ pipeline {
 
         stage('Sonar analysis') {
             environment {
-                scannerHome = tool 'SonarQubeScanner'
+                scannerHome = tool 'sonar-scanner'
             }
 
             steps {
-                withSonarQubeEnv("Sonarqube-Sever") {
+                withSonarQubeEnv("mysonar-server") {
                     sh "${scannerHome}/bin/sonar-scanner"
                 }
 
@@ -32,7 +32,7 @@ pipeline {
             steps {
                 rtServer (
                     id: "ARTIFACTORY_SERVER",
-                    url: 'http://192.168.1.99:8081/artifactory',
+                    url: 'http://artifactory.cheekuru.com:8081/artifactory',
                     username:'admin',
                     password:'password'
                 )
@@ -40,15 +40,15 @@ pipeline {
                 rtMavenDeployer (
                     id: "MAVEN_DEPLOYER",
                     serverId: "ARTIFACTORY_SERVER",
-                    releaseRepo: "libs-release-local",
-                    snapshotRepo: "libs-snapshot-local"
+                    releaseRepo: "spring-petclinic-release",
+                    snapshotRepo: "spring-petclinic-snapshot"
                 )
 
                 rtMavenResolver (
                     id: "MAVEN_RESOLVER",
                     serverId: "ARTIFACTORY_SERVER",
-                    releaseRepo: "artifactory-maven-virtual",
-                    snapshotRepo: "artifactory-maven-virtual"
+                    releaseRepo: "spring-petclinic-virtual-groups",
+                    snapshotRepo: "spring-petclinic-virtual-groups"
                 )
             }
         }
@@ -63,10 +63,11 @@ pipeline {
          stage('Deploy to production') {
             steps {
                sshagent(credentials : ['vagrant-user-with-key']) {
-                sh 'ssh -o StrictHostKeyChecking=no vagrant@prod-host.cheekuru.com uptime'
-                sh 'ssh -v vagrant@prod-host.cheekuru.com'
-                sh 'scp ./target/spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar vagrant@prod-host.cheekuru.com:/home/vagrant/devops/'
-                sh 'ssh -o StrictHostKeyChecking=no vagrant@prod-host.cheekuru.com java -jar /home/vagrant/devops/spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar'
+                   
+                //sh 'ssh -o StrictHostKeyChecking=no vagrant@prod-host.cheekuru.com uptime'
+                //sh 'ssh -v vagrant@prod-host.cheekuru.com'
+                //sh 'scp ./target/spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar vagrant@prod-host.cheekuru.com:/home/vagrant/devops/'
+                //sh 'ssh -o StrictHostKeyChecking=no vagrant@prod-host.cheekuru.com java -jar /home/vagrant/devops/spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar'
 
                }
             }
