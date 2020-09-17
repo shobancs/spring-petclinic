@@ -1,8 +1,8 @@
 pipeline {
     agent any
     tools {
-        maven 'mvn-3.6.3'
-        jdk 'open-jdk8'
+        maven 'Maven-3.6.0'
+        jdk 'java-11-openjdk
     }
     stages {
         stage('Check out git repo') {
