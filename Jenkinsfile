@@ -16,7 +16,7 @@ pipeline {
                     id: "ARTIFACTORY_SERVER",
                     url: 'http://artifactory.cheekuru.com:8081/artifactory',
                     username:'admin',
-                    password:'password'
+                    password:'Admin230'
                 )
 
                 rtMavenDeployer (
