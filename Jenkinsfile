@@ -10,24 +10,6 @@ pipeline {
                git 'https://github.com/shobancs/spring-petclinic.git'
             }
         }
-        stage('Build') {
-            steps {
-               sh 'mvn clean install'
-            }
-        }
-
-        stage('Sonar analysis') {
-            environment {
-                scannerHome = tool 'sonarqube-scanner-4.4'
-            }
-
-            steps {
-                withSonarQubeEnv("mysonar-server") {
-                    sh "${scannerHome}/bin/sonar-scanner"
-                }
-
-           }
-        }
         stage ('Artifactory configuration') {
             steps {
                 rtServer (
@@ -52,6 +34,25 @@ pipeline {
                 )
             }
         }
+        stage('Build') {
+            steps {
+               sh 'mvn clean install'
+            }
+        }
+
+        stage('Sonar analysis') {
+            environment {
+                scannerHome = tool 'sonarqube-scanner-4.4'
+            }
+
+            steps {
+                withSonarQubeEnv("mysonar-server") {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+
+           }
+        }
+        
 
         stage('Upload to artifactory') {
             steps {
